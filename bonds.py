@@ -152,4 +152,4 @@ final_df["FX_code"] = final_df["Pais"].str.lower().map(pais_a_fx)
 
 
 
-final_df.to_csv(f'bonds_{today}.csv', index=False)
+final_df.to_csv(f'data_tmp/bonds_{today}.csv', index=False)

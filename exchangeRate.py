@@ -63,4 +63,4 @@ df_final = df_forex.merge(
 )
 
 
-df_final.to_csv(f'exchangeRate_{today}.csv', index=False)
+df_final.to_csv(f'data_tmp/exchangeRate_{today}.csv', index=False)

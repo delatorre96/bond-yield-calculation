@@ -167,7 +167,7 @@ for c in countries:
         all_data.append(df)
         
 final_df = pd.concat(all_data)
-final_df.to_csv(f'inflation_IMF_{today}.csv',index = False)
+final_df.to_csv(f'data_tmp/inflation_IMF_{today}.csv',index = False)
 
 
 
