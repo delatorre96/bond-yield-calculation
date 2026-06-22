@@ -170,16 +170,7 @@ df2 = df2.rename(columns = {'ExchangeRate' : 'ExchangeRate_start'})
 df2 = df2[[ 'country','EmissionDate', 'Interest', 'bond', 'MaturityDate',
        'IPC_end','IPC_start', 'accumulatedInflation','Currency', 'ExchangeRate_start','ExchangeRate_end' ]]
 
-#####rentabilities #####
+df2 = df2.dropna()
 
+df2.to_csv(f'data_tmp/series_data_{today}.csv',index = False)
 
-df_series = df2.dropna()
-
-
-df_series['rentability'] = ((df_series['ExchangeRate_start'] *(1 + df_series['Interest']))/(df_series['ExchangeRate_end'] * (1 + df_series['accumulatedInflation']))) - 1
-
-
-df_series = df_series.sort_values(by = 'rentability', ascending = False).reset_index(drop = True)
-
-
-df_series.to_csv(f'data_tmp/series_data_{today}.csv',index = False)

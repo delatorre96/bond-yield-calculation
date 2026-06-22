@@ -12,6 +12,7 @@ import time
 import random
 from datetime import date
 today = date.today()
+today_str = today.strftime("%d/%m/%Y")
 
 def maturity_to_years(name):
 
@@ -30,6 +31,7 @@ def maturity_to_years(name):
         return value / 12
 
     return np.nan
+
 
 
 countries = investpy.get_bond_countries()
@@ -79,7 +81,7 @@ for country in countries:
                 df = investpy.get_bond_historical_data(
                     bond=bond,
                     from_date='01/01/2011',
-                    to_date='01/01/2026'
+                    to_date=f'{today_str}'
                 )
 
                 df = df.reset_index()
