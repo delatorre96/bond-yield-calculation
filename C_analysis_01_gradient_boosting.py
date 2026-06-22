@@ -4,7 +4,7 @@ Created on Fri Jun 19 22:30:27 2026
 
 @author: ignacio.delatorre
 """
-
+from pathlib import Path
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -18,7 +18,8 @@ from sklearn.metrics import (
     auc
 )
 import matplotlib.pyplot as plt
-
+VIZ_DIR = Path("viz")
+VIZ_DIR.mkdir(exist_ok=True)
 
 df = pd.read_csv('data_tmp/series_data_2026-06-14.csv')
 
@@ -92,76 +93,122 @@ plt.ylabel("True Positive Rate")
 plt.title("ROC Curve - Gradient Boosting")
 plt.legend(loc="lower right")
 plt.grid(True)
-plt.show()
+
+plt.savefig(VIZ_DIR / "roc_curve.png", bbox_inches="tight", dpi=300)
+plt.close()
 
 
-###########3 Shap values ##############
+
+# =========================
+# SHAP
+# =========================
 
 import shap
 
 explainer = shap.TreeExplainer(gbm)
-
 shap_values = explainer.shap_values(X_test)
 
+# Summary plot
 shap.summary_plot(
     shap_values,
     X_test,
-    feature_names=X_test.columns
+    feature_names=X_test.columns,
+    show=False
 )
 
+plt.savefig(VIZ_DIR / "shap_summary.png", bbox_inches="tight", dpi=300)
+plt.close()
+
+# Summary bar plot
 shap.summary_plot(
     shap_values,
     X_test,
-    plot_type="bar"
+    plot_type="bar",
+    show=False
 )
 
+plt.savefig(VIZ_DIR / "shap_summary_bar.png", bbox_inches="tight", dpi=300)
+plt.close()
+
+# Dependence Interest
 shap.dependence_plot(
     "Interest",
     shap_values,
-    X_test
+    X_test,
+    show=False
 )
+
+plt.savefig(VIZ_DIR / "shap_dependence_interest.png",
+            bbox_inches="tight",
+            dpi=300)
+plt.close()
+
+# Dependence IPC
 shap.dependence_plot(
     "IPC_start",
     shap_values,
-    X_test
+    X_test,
+    show=False
 )
 
+plt.savefig(VIZ_DIR / "shap_dependence_ipc.png",
+            bbox_inches="tight",
+            dpi=300)
+plt.close()
 
-######### PDP ########3
+# =========================
+# PDP
+# =========================
 
 from sklearn.inspection import PartialDependenceDisplay
 
-fig, ax = plt.subplots(figsize=(6,4))
+# PDP Interest
+fig, ax = plt.subplots(figsize=(6, 4))
 
 PartialDependenceDisplay.from_estimator(
     gbm,
     X_test,
-    features=['Interest'],
+    features=["Interest"],
     ax=ax
 )
 
-plt.show()
+fig.savefig(
+    VIZ_DIR / "pdp_interest.png",
+    bbox_inches="tight",
+    dpi=300
+)
+plt.close(fig)
 
-
-
-fig, ax = plt.subplots(figsize=(12,4))
+# PDP todas las variables
+fig, ax = plt.subplots(figsize=(12, 4))
 
 PartialDependenceDisplay.from_estimator(
     gbm,
     X_test,
-    features=['Interest', 'IPC_start', 'ExchangeRate_start']
+    features=["Interest", "IPC_start", "ExchangeRate_start"]
 )
 
 plt.tight_layout()
-plt.show()
 
+fig.savefig(
+    VIZ_DIR / "pdp_all_features.png",
+    bbox_inches="tight",
+    dpi=300
+)
+plt.close(fig)
+
+# PDP interacción
+fig, ax = plt.subplots(figsize=(6, 4))
 
 PartialDependenceDisplay.from_estimator(
     gbm,
     X_test,
-    features=[('Interest', 'ExchangeRate_start')]
+    features=[("Interest", "ExchangeRate_start")]
 )
 
-plt.show()
-
-
+fig.savefig(
+    VIZ_DIR / "pdp_interest_exchange_rate.png",
+    bbox_inches="tight",
+    dpi=300
+)
+plt.close(fig)
